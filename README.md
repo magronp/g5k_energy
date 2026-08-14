@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 ### Basic usage
 
-If you want to collect jobs on a short period of time (less than 1 month), you can directly run:
+If you want to collect jobs on a short period of time (about 1 month), you can directly run:
 ```
 python collect_exp.py --start_exp "2023-04-03 00:00:00" --stop_exp "2023-04-28 23:59:59" --user_list <user1>,<user2>,...,<userN>
 ```
@@ -25,13 +25,16 @@ If you do this multiple times on different time periods and then want to concate
 ```
 python concat.py --user_list <user1>,<user2>,...,<userN>
 ```
-It will create a file `outputs/<user>.csv`.
+It will create a file `outputs/<user>.csv` for each user.
 
 
 ### Collecting jobs on a long period of time
 
-Otherwise, need to slice the time period into chunks of 1 month, and run the command multiple times. This is assembled in the shell script:
+If the time period is longer than about a month, you might need to slice it into smaller chunks, otherwise the process will likely be killed. Then you need to concatenate the results as above.
+
+We automate that with the `run.sh` shell script, that you can simply run as follows:
 
 ```
 ./run.sh start_exp="2023-03-13 00:00:00" stop_exp="2026-07-31 23:59:59" user_list=<user1>,<user2>,...,<userN>
 ```
+

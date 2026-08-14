@@ -1,0 +1,8 @@
+*.csv
+*.json
+!cluster_info.json
+*.stderr
+*.stdout
+
+.venv/*
+outputs/*

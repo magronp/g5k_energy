@@ -1,0 +1,219 @@
+{
+    "CLUSTERS_INFO_CPU": {
+        "graoully": {
+            "cores_per_cpu": 8,
+            "cpu": "Intel Xeon E5-2630 v3",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "tdp_cpu": 85
+        },
+        "graphene": {
+            "cores_per_cpu": 4,
+            "cpu": "Intel Xeon X3440",
+            "mem_gb": 16,
+            "nb_cpu": 1,
+            "tdp_cpu": 95
+        },
+        "grappe": {
+            "cores_per_cpu": 20,
+            "cpu": "Intel Xeon Gold 5218R",
+            "mem_gb": 96,
+            "nb_cpu": 2,
+            "tdp_cpu": 125
+        },
+        "grcinq": {
+            "cores_per_cpu": 8,
+            "cpu": "Intel Xeon E5-2650",
+            "mem_gb": 64,
+            "nb_cpu": 2,
+            "tdp_cpu": 95
+        },
+        "grdix": {
+            "cores_per_cpu": 128,
+            "cpu": "AMD EPYC 9754",
+            "mem_gb": 1024,
+            "nb_cpu": 2,
+            "tdp_cpu": 360
+        },
+        "griffon": {
+            "cores_per_cpu": 4,
+            "cpu": "Intel Xeon L5420",
+            "mem_gb": 16,
+            "nb_cpu": 2,
+            "tdp_cpu": 50
+        },
+        "grimoire": {
+            "cores_per_cpu": 8,
+            "cpu": "Intel Xeon E5-2630 v3",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "tdp_cpu": 85
+        },
+        "grisou": {
+            "cores_per_cpu": 8,
+            "cpu": "Intel Xeon E5-2630 v3",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "tdp_cpu": 85
+        },
+        "gros": {
+            "cores_per_cpu": 18,
+            "cpu": "Intel Xeon Gold 5220",
+            "mem_gb": 96,
+            "nb_cpu": 1,
+            "tdp_cpu": 125
+        },
+        "grosminet": {
+            "cores_per_cpu": 18,
+            "cpu": "Intel Xeon Gold 6240L",
+            "mem_gb": 6144,
+            "nb_cpu": 4,
+            "tdp_cpu": 150
+        },
+        "grostiti": {
+            "cores_per_cpu": 14,
+            "cpu": "Intel Xeon E7-4850 v3",
+            "mem_gb": 1536,
+            "nb_cpu": 4,
+            "tdp_cpu": 115
+        },
+        "grvingt": {
+            "cores_per_cpu": 16,
+            "cpu": "Intel Xeon Gold 6130",
+            "mem_gb": 192,
+            "nb_cpu": 2,
+            "tdp_cpu": 125
+        }
+    },
+    "CLUSTERS_INFO_GPU": {
+        "graffiti": {
+            "cores_per_cpu": 8,
+            "cpu": "Intel Xeon Silver 4110",
+            "gpu": "Nvidia RTX 2080 Ti (11 GiB)",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "nb_gpu": 4,
+            "short_name": "RTX 2080 Ti",
+            "tdp_cpu": 85,
+            "tdp_gpu": 250
+        },
+        "graphique": {
+            "cores_per_cpu": 6,
+            "cpu": "Intel Xeon E5-2620 v3",
+            "gpu": "Nvidia GTX 980",
+            "mem_gb": 64,
+            "nb_cpu": 2,
+            "nb_gpu": 2,
+            "short_name": "GTX 980",
+            "tdp_cpu": 85,
+            "tdp_gpu": 165
+        },
+        "graphite": {
+            "cores_per_cpu": 8,
+            "cpu": "Intel Xeon E5-2650",
+            "gpu": "Intel Xeon Phi 7120P",
+            "mem_gb": 256,
+            "nb_cpu": 2,
+            "nb_gpu": 1,
+            "short_name": "Xeon Phi",
+            "tdp_cpu": 95,
+            "tdp_gpu": 300
+        },
+        "grat": {
+            "cores_per_cpu": 32,
+            "cpu": "AMD EPYC 7513",
+            "gpu": "Nvidia A100 (40 GiB)",
+            "mem_gb": 512,
+            "nb_cpu": 2,
+            "nb_gpu": 8,
+            "short_name": "A100",
+            "tdp_cpu": 200,
+            "tdp_gpu": 250
+        },
+        "gratouille": {
+            "cores_per_cpu": 12,
+            "cpu": "Intel Xeon E5-2650 v4",
+            "gpu": "Nvidia Tesla V100 (16 GiB)",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "nb_gpu": 1,
+            "short_name": "Tesla V100",
+            "tdp_cpu": 105,
+            "tdp_gpu": 250
+        },
+        "grele": {
+            "cores_per_cpu": 12,
+            "cpu": "Intel Xeon E5-2650 v4",
+            "gpu": "Nvidia GTX 1080 Ti",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "nb_gpu": 2,
+            "short_name": "GTX 1080 Ti",
+            "tdp_cpu": 105,
+            "tdp_gpu": 250
+        },
+        "gres": {
+            "cores_per_cpu": 24,
+            "cpu": "AMD EPYC 9254",
+            "gpu": "Nvidia Tesla L40S (45 GiB)",
+            "mem_gb": 512,
+            "nb_cpu": 2,
+            "nb_gpu": 2,
+            "short_name": "Tesla L40S",
+            "tdp_cpu": 200,
+            "tdp_gpu": 300
+        },
+        "grimani": {
+            "cores_per_cpu": 6,
+            "cpu": "Intel Xeon E5-2603 v3",
+            "gpu": "Nvidia Tesla K40M",
+            "mem_gb": 64,
+            "nb_cpu": 2,
+            "nb_gpu": 2,
+            "short_name": "Tesla K40M",
+            "tdp_cpu": 85,
+            "tdp_gpu": 235
+        },
+        "grouille": {
+            "cores_per_cpu": 32,
+            "cpu": "AMD EPYC 7452",
+            "gpu": "Nvidia A100 (40 GiB)",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "nb_gpu": 2,
+            "short_name": "A100 (exotic)",
+            "tdp_cpu": 155,
+            "tdp_gpu": 250
+        },
+        "grue": {
+            "cores_per_cpu": 16,
+            "cpu": "AMD EPYC 7351",
+            "gpu": "Nvidia Tesla T4",
+            "mem_gb": 128,
+            "nb_cpu": 2,
+            "nb_gpu": 4,
+            "short_name": "Tesla T4",
+            "tdp_cpu": 170,
+            "tdp_gpu": 70
+        },
+        "gruss": {
+            "cores_per_cpu": 24,
+            "cpu": "AMD EPYC 7352",
+            "gpu": "Nvidia A40 (45 GiB)",
+            "mem_gb": 256,
+            "nb_cpu": 2,
+            "nb_gpu": 2,
+            "short_name": "A40",
+            "tdp_cpu": 155,
+            "tdp_gpu": 300
+        }
+    },
+    "HARDWARE_TO_NODE": {
+        "2 x NVIDIA A40": "gruss",
+        "2 x NVIDIA GeForce GTX 1080 Ti": "grele",
+        "2 x NVIDIA L40S": "gres",
+        "4 x NVIDIA GeForce RTX 2080 Ti": "graffiti",
+        "4 x Quadro RTX 6000": "graffiti",
+        "4 x Tesla T4": "grue"
+    }
+}

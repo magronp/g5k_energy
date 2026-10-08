@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     ss = dt_next_first.strftime("%Y-%m-%d %H:%M:%S%z")
     fs = dt_next_last.strftime("%Y-%m-%d %H:%M:%S%z")
-    #print(f"{ss}, {fs}")
+    # print(f"{ss}, {fs}")
 
     # write the result
     with open(dt_path, "w") as t:  # here, "w" to erase the existing one

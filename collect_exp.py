@@ -31,17 +31,21 @@ def create_json_oarstat(start_date, stop_date, out_dir="outputs/"):
 
     # Record all oarstat (jobs, resources, ...) happend between start_time and end_time
     if not os.path.exists(path_oar):
+
+        # Store the job list in a tmp file
         command = f'oarstat -g "{start_date},{stop_date}" -J > {path_tmp}'
         subprocess.run(command, shell=True)
-        
-        # Read the oarstat file and extract only the jobs dictionnary (reduce memory size)
+
+        # Read the tmp file and extract only the jobs dictionnary (reduce memory size)
         with open(path_tmp, "r") as f:
+            path_tmp
             data = json.load(f)
             jobs = data["jobs"]
 
         with open(path_oar, "w") as f:
             json.dump(jobs, f)
 
+        # Remove the tmp file
         command = f"rm {path_tmp}"
         subprocess.run(command, shell=True)
 
@@ -136,7 +140,7 @@ def update_bmc(df_bmc, job_id, nb_gpu, jobs_same_node, dir_jobs="outputs/jobs/")
     df_gate["gate"] = nb_gpu
 
     # Iterate over jobs on the same node
-    for other_job_id, other_job_info in jobs_same_node.items():
+    for other_job_id, _ in jobs_same_node.items():
         if other_job_id != job_id:  # Only process other jobs, not the current one
 
             _, _, _, _, _, nb_other_gpu, _, _, start_readable, stop_readable = (
@@ -197,7 +201,11 @@ def record_joblist(user, jobs_all, out_dir="outputs/"):
     mkdir(dir_user)
 
     # Collect job data for these specific jobs IDs
-    jobs_ids = [i for i, j_inf in jobs_all.items() if j_inf["owner"] == user]
+    jobs_ids = [
+        i
+        for i, j_inf in jobs_all.items()
+        if j_inf["owner"] == user or j_inf["project"] == user
+    ]
 
     # Store this data
     user_df = create_df_jobinfo(jobs_ids, out_dir)
@@ -283,14 +291,12 @@ def get_bmc_powerprofile(
             df_bmc = update_bmc(df_bmc, job_id, nb_gpu, jobs_same_node, dir_jobs)
             path_bmc_gated = os.path.join(dir_bmc, f"{job_id}_gated.csv")
             df_bmc.to_csv(path_bmc_gated)
-            print(f"GATED {job_id}")
 
         df_bmc_resampled = (
             df_bmc.set_index("timestamp").resample("1min")["value"].mean().reset_index()
         )
 
         df_user.append(df_bmc_resampled)
-        #df_user = pd.concat([df_user, df_bmc_resampled], ignore_index=False)
 
     if not all([df.empty for df in df_user]):
         df_user = pd.concat([df for df in df_user if not df.empty])
@@ -329,13 +335,13 @@ def collect_exp(
     print(f"----- Load list of jobs")
     with open(path_oar, "r") as f:
         jobs_all = json.load(f)
-    print(f"Number of jobs in total = {len(jobs_all)}")
+    print(f"Number of jobs in total on the period = {len(jobs_all)}")
 
     for user in user_list:
         print(f"----- Process data for user {user}")
         # Record job list for each user
         jobs_ids = record_joblist(user, jobs_all, out_dir)
-        print(f"Number of jobs for user {user} = {len(jobs_ids)}")
+        print(f"Number of jobs for user {user} on the period  = {len(jobs_ids)}")
 
         # Get the BMC power profile
         if compute_bmc:
@@ -358,16 +364,25 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--user_list", type=str, default="pmagron")
     parser.add_argument("--start_exp", type=str, default="2026-07-21 00:00:00")
-    parser.add_argument("--stop_exp", type=str, default="2026-08-13 07:59:59")
+    parser.add_argument("--stop_exp", type=str, default="2026-07-22 07:59:59")
     parser.add_argument("--out_dir", type=str, default="outputs/")
+    parser.add_argument("--bmc", type=bool, default=True)
     args = parser.parse_args()
 
-    user_list = args.user_list.split(',')
+    user_list = args.user_list.split(",")
     start_exp = args.start_exp
     stop_exp = args.stop_exp
     out_dir = args.out_dir
+    compute_bmc = args.bmc
 
     # Process job data from the start to stop of the exp
-    collect_exp(user_list, start_exp, stop_exp, out_dir=out_dir, tight_bmc_bound=False)
+    collect_exp(
+        user_list,
+        start_exp,
+        stop_exp,
+        out_dir=out_dir,
+        compute_bmc=compute_bmc,
+        tight_bmc_bound=False,
+    )
 
 # EOF

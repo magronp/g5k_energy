@@ -22,5 +22,5 @@ done < "dt_list.txt"
 # Remove the list of month-level start/stop dates
 rm -f dt_list.txt
 
-# Run the concatenation of files
+# Concatenation all files
 python concat.py --user_list "${user_list}"

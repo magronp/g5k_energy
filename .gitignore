@@ -3,6 +3,7 @@
 !cluster_info.json
 *.stderr
 *.stdout
+*.pdf
 
 .venv/*
 outputs/*

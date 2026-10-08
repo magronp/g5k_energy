@@ -7,8 +7,8 @@ This repository allows users of the [Grid5000 platform](https://www.grid5000.fr/
 Start by cloning this repository, creating/activating a virtual environment, and installing the required package (pandas and numpy):
 
 ```
-git clone git@github.com:magronp/g5k-energy.git
-cd g5k-energy/
+git clone git@github.com:magronp/g5k_-_energy.git
+cd g5k_-_energy/
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

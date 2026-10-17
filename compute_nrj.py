@@ -43,7 +43,7 @@ def energy_mlco2(cluster, duration, occupation):
     return energy_mlco2
 
 
-def add_energy_csv(df, out_dir="outputs/"):
+def add_energy_csv(df, out_dir):
 
     # Convert to timedeta
     df["time"] = pd.to_timedelta(df["time"])
@@ -70,8 +70,9 @@ def add_energy_csv(df, out_dir="outputs/"):
         )
 
         # Add BMC if available
-        path_bmc = os.path.join(out_dir, "bmc", f"{job}.csv")
-        path_bmc_gated = os.path.join(out_dir, "bmc", f"{job}_gated.csv")
+        dir_bmc = os.path.join(out_dir, "job_bmc/")
+        path_bmc = os.path.join(dir_bmc, f"{job}.csv")
+        path_bmc_gated = os.path.join(dir_bmc, f"{job}_gated.csv")
         if os.path.exists(path_bmc):
             if os.path.exists(path_bmc_gated):
                 job_bmc = pd.read_csv(path_bmc_gated)
@@ -95,7 +96,7 @@ def compute_nrj(user, out_dir):
     df = df[
         ["job_id", "node", "directory", "time", "start_date", "stop_date", "request"]
     ]
-    add_energy_csv(df, out_dir=out_dir)
+    add_energy_csv(df, out_dir)
     df.reset_index(inplace=True, drop=True)
 
     # Record the data

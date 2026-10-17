@@ -42,10 +42,10 @@ If the time period is longer than about a month, you might need to slice it into
 We automate that with the `run.sh` shell script, that you can simply run as follows:
 
 ```
-./run.sh start_exp="2023-03-13 00:00:00" stop_exp="2026-07-31 23:59:59" user_list=<user1>,<user2>,...,<userN>
+./run.sh start_exp="2023-03-13 00:00:00" stop_exp="2026-10-15 23:59:59" user_list=<user1>,<user2>,...,<userN> timestep=10
 ```
 
-Note that a more efficient way of collecting jobs could be implemented using the potgresSQL client, as indicated [here](https://www.grid5000.fr/w/Advanced_OAR#OAR_database_logs). We leave it to future work.
+where the `timestep` parameter controls the chunk duration, in days. Note that a more efficient way of collecting jobs could be implemented using the potgresSQL client, as indicated [here](https://www.grid5000.fr/w/Advanced_OAR#OAR_database_logs). We leave it to future work.
 
 
 ### Collecting team-level data
@@ -53,7 +53,7 @@ Note that a more efficient way of collecting jobs could be implemented using the
 The above scripts work also is using a *team* instead of a *user*. For instance, to track the job/BMC for the Multispeech team, as in [our paper](https://arxiv.org/abs/2610.01619), you can run:
 
 ```
-./run.sh start_exp="2023-09-01 00:00:00" stop_exp="2024-12-31 23:59:59" user_list=multispeech
+./run.sh start_exp="2023-09-01 00:00:00" stop_exp="2024-12-31 23:59:59" user_list=multispeech timestep=10
 ```
 
 

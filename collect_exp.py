@@ -17,11 +17,7 @@ def mkdir(dir):
     return
 
 
-def create_json_oarstat(start_date, stop_date, out_dir="outputs/"):
-
-    # Folder where to record json files for the OAR log
-    dir_oar = os.path.join(out_dir, "oar/")
-    mkdir(dir_oar)
+def create_json_oarstat(start_date, stop_date, dir_oar):
 
     # Path to file json where to record the data
     path_oar = os.path.join(dir_oar, f"jobs_{start_date}_{stop_date}.json")
@@ -114,9 +110,7 @@ def get_info_json_jobid(job_id, dir_jobs):
     )
 
 
-def create_load_bmc_file(
-    node, job_id, start_date_job, stop_date_job, dir_bmc="outputs/bmc/"
-):
+def create_load_bmc_file(node, job_id, start_date_job, stop_date_job, dir_bmc):
 
     path_bmc = os.path.join(dir_bmc, f"{job_id}.csv")
 
@@ -131,7 +125,7 @@ def create_load_bmc_file(
     return df_bmc
 
 
-def update_bmc(df_bmc, job_id, nb_gpu, jobs_same_node, dir_jobs="outputs/jobs/"):
+def update_bmc(df_bmc, job_id, nb_gpu, jobs_same_node, dir_jobs):
 
     # Create a copy of df_bmc
     df_gate = copy.deepcopy(df_bmc)
@@ -159,11 +153,7 @@ def update_bmc(df_bmc, job_id, nb_gpu, jobs_same_node, dir_jobs="outputs/jobs/")
     return df_bmc
 
 
-def create_df_jobinfo(list_job, out_dir="outputs/"):
-
-    # Folder where to store json files for each job ID
-    dir_jobs = os.path.join(out_dir, "jobs/")
-    mkdir(dir_jobs)
+def create_df_jobinfo(list_job, dir_jobs):
 
     # Initialize an empty list to store rows of data
     rows = []
@@ -194,11 +184,7 @@ def create_df_jobinfo(list_job, out_dir="outputs/"):
     return dataframe
 
 
-def record_joblist(user, jobs_all, out_dir="outputs/"):
-
-    # Folder where to store user-specific csv data
-    dir_user = os.path.join(out_dir, "csv", user)
-    mkdir(dir_user)
+def record_joblist(user, jobs_all, dir_user, dir_jobs):
 
     # Collect job data for these specific jobs IDs
     jobs_ids = [
@@ -208,19 +194,20 @@ def record_joblist(user, jobs_all, out_dir="outputs/"):
     ]
 
     # Store this data
-    user_df = create_df_jobinfo(jobs_ids, out_dir)
+    user_df = create_df_jobinfo(jobs_ids, dir_jobs)
     user_df.to_csv(os.path.join(dir_user, f"jobs_{start_exp}_{stop_exp}.csv"))
 
     return jobs_ids
 
 
 def get_bmc_powerprofile(
-    user,
     jobs_ids,
     jobs_all,
     start_exp,
     stop_exp,
-    out_dir="outputs/",
+    dir_user,
+    dir_jobs,
+    dir_bmc,
     tight_bmc_bound=False,
 ):
 
@@ -229,16 +216,6 @@ def get_bmc_powerprofile(
     timezone = pytz.timezone("Europe/Paris")
     start_exp_tz = pd.to_datetime(start_exp).tz_localize("UTC").tz_convert(timezone)
     stop_exp_tz = pd.to_datetime(stop_exp).tz_localize("UTC").tz_convert(timezone)
-
-    # Folder where to store files for each job ID and BMC files
-    dir_jobs = os.path.join(out_dir, "jobs/")
-    mkdir(dir_jobs)
-    dir_bmc = os.path.join(out_dir, "bmc/")
-    mkdir(dir_bmc)
-
-    # Folder where to store user-specific csv data
-    dir_user = os.path.join(out_dir, "csv", user)
-    mkdir(dir_user)
 
     df_user = []
     for job_id in jobs_ids:
@@ -326,9 +303,17 @@ def collect_exp(
     tight_bmc_bound=False,
 ):
 
+    # Folders where to record json files for the OAR log and for each job ID, BMC files per job
+    dir_oar = os.path.join(out_dir, "oar/")
+    mkdir(dir_oar)
+    dir_jobs = os.path.join(out_dir, "job_info/")
+    mkdir(dir_jobs)
+    dir_bmc = os.path.join(out_dir, "job_bmc/")
+    mkdir(dir_bmc)
+
     # Create json file for the whole period
     print(f"----- Collecting jobs from the {start_exp} to the {stop_exp}")
-    path_oar = create_json_oarstat(start_exp, stop_exp, out_dir)
+    path_oar = create_json_oarstat(start_exp, stop_exp, dir_oar)
     print("done")
 
     # Load the lsit of all jobs
@@ -338,21 +323,27 @@ def collect_exp(
     print(f"Number of jobs in total on the period = {len(jobs_all)}")
 
     for user in user_list:
+
+        # Folder where to store user-specific data
+        dir_user = os.path.join(out_dir, "per_user/", user)
+        mkdir(dir_user)
+
         print(f"----- Process data for user {user}")
         # Record job list for each user
-        jobs_ids = record_joblist(user, jobs_all, out_dir)
+        jobs_ids = record_joblist(user, jobs_all, dir_user, dir_jobs)
         print(f"Number of jobs for user {user} on the period  = {len(jobs_ids)}")
 
         # Get the BMC power profile
         if compute_bmc:
             print(f"Compute BMC / create power profile")
             get_bmc_powerprofile(
-                user,
                 jobs_ids,
                 jobs_all,
                 start_exp,
                 stop_exp,
-                out_dir=out_dir,
+                dir_user,
+                dir_jobs,
+                dir_bmc,
                 tight_bmc_bound=tight_bmc_bound,
             )
 
@@ -363,8 +354,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--user_list", type=str, default="pmagron")
-    parser.add_argument("--start_exp", type=str, default="2026-07-21 00:00:00")
-    parser.add_argument("--stop_exp", type=str, default="2026-07-22 07:59:59")
+    parser.add_argument("--start_exp", type=str, default="2026-08-01 00:00:00")
+    parser.add_argument("--stop_exp", type=str, default="2026-08-10 23:59:59")
     parser.add_argument("--out_dir", type=str, default="outputs/")
     parser.add_argument("--bmc", type=bool, default=True)
     args = parser.parse_args()

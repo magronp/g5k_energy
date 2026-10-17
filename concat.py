@@ -12,7 +12,7 @@ with open(G5K_INFO_FILE, "r") as fp:
 def concat_all_job_files_usr(user, out_dir):
 
     df_all = pd.DataFrame()
-    dir_user = os.path.join(out_dir, "csv", user)
+    dir_user = os.path.join(out_dir, "per_user", user)
 
     for _, _, files in os.walk(dir_user, topdown=False):
         for name in files:
@@ -56,7 +56,7 @@ def concat_all_job_files_usr(user, out_dir):
 def concat_bmc_usr(user, out_dir):
 
     year_consumption = pd.DataFrame()
-    dir_user = os.path.join(out_dir, "csv", user)
+    dir_user = os.path.join(out_dir, "per_user", user)
 
     for _, _, files in os.walk(dir_user, topdown=False):
         for name in files:

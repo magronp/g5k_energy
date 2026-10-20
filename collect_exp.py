@@ -10,6 +10,7 @@ import re
 import copy
 
 G5K_INFO_FILE = "cluster_info.json"
+SITE = "nancy"
 
 
 def mkdir(dir):
@@ -115,7 +116,7 @@ def create_load_bmc_file(node, job_id, start_date_job, stop_date_job, dir_bmc):
     path_bmc = os.path.join(dir_bmc, f"{job_id}.csv")
 
     if not os.path.exists(path_bmc):
-        url = f"https://api.grid5000.fr/stable/sites/nancy/metrics?nodes={node}&metrics=bmc_node_power_watt&start_time={start_date_job}&end_time={stop_date_job}"
+        url = f"https://api.grid5000.fr/stable/sites/{SITE}/metrics?nodes={node}&metrics=bmc_node_power_watt&start_time={start_date_job}&end_time={stop_date_job}"
         header = "timestamp,device_id,metric_id,value,labels"
         command = f"{{ echo {header}; curl \"{url}\"| jq -r '.[] | [.timestamp, .device_id, .metric_id, .value, .labels|tostring] | @csv'; }} > {path_bmc}"
         subprocess.run(command, shell=True)
@@ -300,7 +301,7 @@ def collect_exp(
     stop_exp,
     out_dir="outputs/",
     compute_bmc=True,
-    tight_bmc_bound=False,
+    tight_bmc_bound=True,
 ):
 
     # Folders where to record json files for the OAR log and for each job ID, BMC files per job
@@ -373,7 +374,7 @@ if __name__ == "__main__":
         stop_exp,
         out_dir=out_dir,
         compute_bmc=compute_bmc,
-        tight_bmc_bound=False,
+        tight_bmc_bound=True,
     )
 
 # EOF

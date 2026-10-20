@@ -3,11 +3,14 @@ import pandas as pd
 import re
 import json
 import argparse
+from datetime import datetime
 
 # Load Grid5k info
 G5K_INFO_FILE = "cluster_info.json"
 with open(G5K_INFO_FILE, "r") as fp:
-    CLUSTERS_INFO_GPU = json.load(fp)["CLUSTERS_INFO_GPU"]
+    cluster_info = json.load(fp)
+    CLUSTERS_INFO_GPU = cluster_info["CLUSTERS_INFO_GPU"]
+    PUE = cluster_info["PUE"]
 
 
 def energy_green_algorithm(cluster, duration, occupation):
@@ -87,10 +90,19 @@ def add_energy_csv(df, out_dir):
             df.loc[i, "warning"] = "Waiting for kwollect to repaired"
 
 
-def compute_nrj(user, out_dir):
+def compute_nrj(user, start_exp, stop_exp, out_dir):
 
     # Read job list
     df = pd.read_csv(os.path.join(out_dir, f"jobs_{user}.csv"), index_col="Unnamed: 0")
+
+    # Filter jobs within the time period
+    df_sub = pd.DataFrame(columns=list(df.columns))
+    for index, row in df.iterrows():
+        dt_start = datetime.strptime(row["start_date"], "%Y-%m-%d %H:%M:%S")
+        dt_stop = datetime.strptime(row["stop_date"], "%Y-%m-%d %H:%M:%S")
+        if dt_stop <= stop_exp and dt_start >= start_exp:
+            df_sub.loc[index] = row
+    df = df_sub
 
     # Compute energy
     df = df[
@@ -104,7 +116,9 @@ def compute_nrj(user, out_dir):
 
     # Display a summary
     for metric in ["MLCO2", "GA", "BMC"]:
-        print(f"Total {metric} energy = {df["energy_" + metric].sum().item()} kWh")
+        print(
+            f"Total {metric} energy = {df["energy_" + metric].sum().item() * PUE} kWh"
+        )
 
     return
 
@@ -113,14 +127,18 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--user_list", type=str, default="pmagron")
+    parser.add_argument("--start_exp", type=str, default="2023-08-01 00:00:00")
+    parser.add_argument("--stop_exp", type=str, default="2024-11-30 23:59:59")
     parser.add_argument("--out_dir", type=str, default="outputs/")
     args = parser.parse_args()
 
     user_list = args.user_list.split(",")
+    start_exp = datetime.strptime(args.start_exp, "%Y-%m-%d %H:%M:%S")
+    stop_exp = datetime.strptime(args.stop_exp, "%Y-%m-%d %H:%M:%S")
     out_dir = args.out_dir
 
     for user in user_list:
         print(f"------ Compute energy for all jobs for user {user}")
-        compute_nrj(user, out_dir=out_dir)
+        compute_nrj(user, start_exp, stop_exp, out_dir=out_dir)
 
 # EOF

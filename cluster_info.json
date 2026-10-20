@@ -1,4 +1,5 @@
 {
+    "PUE": 1.5,
     "CLUSTERS_INFO_CPU": {
         "graoully": {
             "cores_per_cpu": 8,

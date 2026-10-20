@@ -26,13 +26,15 @@ python collect_exp.py --start_exp "2023-04-03 00:00:00" --stop_exp "2023-04-28 2
 ```
 (note that the list of users must be separated with commas, no space)
 
-This will create one folder per user `outputs/csv/<user>/` containing both the list of jobs and the BMC on ths period, for this user. Note that the BMC is tracked by default, but you can disable it with a flag: `--bmc False`.
+This will create one folder per user `outputs/csv/<user>/` containing both the list of jobs and the BMC on ths period, for this user. By default the BMC is tracked, but you can disable it with a flag: `--bmc False`.
 
 If you do this multiple times on different time periods and then want to concatenate all job information into a single file, run:
 ```
 python concat.py --user_list <user1>,<user2>,...,<userN>
 ```
 It will create a file `outputs/jobs_<user>.csv` for each user.
+
+Note that at the top of the script there is a `SITE` variable: it is set as `nancy` by default, but make sure to change it (e.g., if running jobs on the Lyon or Grenoble sites). Likewise, update the `cluster_info.json` file if you use nodes / hardware whose information is not contained in the file (cf. hardware info [here](https://www.grid5000.fr/w/Hardware)).
 
 
 ### Collecting jobs on a long period of time
@@ -53,7 +55,7 @@ where the `timestep` parameter controls the chunk duration, in days. Note that a
 The above scripts work also is using a *team* instead of a *user*. For instance, to track the job/BMC for the Multispeech team, as in [our paper](https://arxiv.org/abs/2610.01619), you can run:
 
 ```
-./run.sh start_exp="2023-09-01 00:00:00" stop_exp="2024-12-31 23:59:59" user_list=multispeech timestep=10
+./run.sh start_exp="2023-07-31 00:00:00" stop_exp="2024-11-30 23:59:59" user_list=multispeech timestep=10
 ```
 
 
@@ -65,7 +67,7 @@ Then, to get all energy estimates using our methodology, run the following scrip
 ```
 python compute_nrj.py --user_list <user1>,<user2>,...,<userN>
 ```
-This will create a file `outputs/jobs_<user>_energy.csv` for each user. It will also display the total energy (in terms of MLC02, green algorithm, and BMC).
+This will create a file `outputs/jobs_<user>_energy.csv` for each user. It will also display the total energy (in terms of MLC02, green algorithm, and BMC). You can also filter out jobs and compute energy on a specified time window, using on the start/stop date using `--start_exp`and `--stop_exp` parameters as above.
 
 
 ## Visualization

@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import argparse
 
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -38,7 +37,7 @@ if __name__ == "__main__":
         # write the result
         with open(dt_path, "a") as t:
             t.write(f"{ss},{fs}\n")
-            
+
         curr_st = curr_end + timedelta(seconds=1)
-        
+
 # EOF

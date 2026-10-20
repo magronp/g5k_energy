@@ -6,7 +6,9 @@ import argparse
 # Load Grid5k info
 G5K_INFO_FILE = "cluster_info.json"
 with open(G5K_INFO_FILE, "r") as fp:
-    CLUSTERS_INFO_GPU = json.load(fp)["CLUSTERS_INFO_GPU"]
+    cluster_info = json.load(fp)
+    CLUSTERS_INFO_GPU = cluster_info["CLUSTERS_INFO_GPU"]
+    PUE = cluster_info["PUE"]
 
 
 def concat_all_job_files_usr(user, out_dir):
@@ -55,7 +57,7 @@ def concat_all_job_files_usr(user, out_dir):
 
 def concat_bmc_usr(user, out_dir):
 
-    year_consumption = pd.DataFrame()
+    total_consumption = pd.DataFrame()
     dir_user = os.path.join(out_dir, "per_user", user)
 
     for _, _, files in os.walk(dir_user, topdown=False):
@@ -63,18 +65,16 @@ def concat_bmc_usr(user, out_dir):
             if "bmc_" in name:  # ignore jobs files here
 
                 # Load the data
-                df_month = pd.read_csv(os.path.join(dir_user, name))
+                df = pd.read_csv(os.path.join(dir_user, name))
 
-                if not (df_month.empty):
+                if not (df.empty):
 
                     # Ensure the 'timestamp' column is treated as the index with DatetimeIndex
-                    df_month["timestamp"] = pd.to_datetime(
-                        df_month["timestamp"], utc=True
-                    )
-                    df_month.set_index("timestamp", inplace=True)  # Set as index
+                    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+                    df.set_index("timestamp", inplace=True)  # Set as index
                     time_interval_s = 60
                     energy_kwh = (
-                        df_month["value"] * time_interval_s / 3600
+                        df["value"] * time_interval_s / 3600
                     ) / 1000  # Convert Wh to kWh
 
                     # Resample to daily frequency and sum the energy values for each day
@@ -86,20 +86,20 @@ def concat_bmc_usr(user, out_dir):
                     )  # Make sure it's a DataFrame
 
                     daily_consumption["timestamp"] = daily_consumption.index
-                    year_consumption = pd.concat(
-                        [year_consumption, daily_consumption], ignore_index=True
+                    total_consumption = pd.concat(
+                        [total_consumption, daily_consumption], ignore_index=True
                     )
 
-    # Set the index of the year_consumption to timestamp and plot yearly data
-    year_consumption.sort_values(by="timestamp", inplace=True)
-    year_consumption.set_index("timestamp", inplace=True)
-    year_consumption.to_csv(os.path.join(out_dir, f"bmc_{user}.csv"))
+    # Set the index of the total consumption to timestamp
+    total_consumption.sort_values(by="timestamp", inplace=True)
+    total_consumption.set_index("timestamp", inplace=True)
+    total_consumption.to_csv(os.path.join(out_dir, f"bmc_{user}.csv"))
 
-    yearly_totals = year_consumption["daily_kwh"].sum()
-    yearly_daily_mean = year_consumption["daily_kwh"].mean()
+    total_sum = total_consumption["daily_kwh"].sum() * PUE
+    daily_mean = total_consumption["daily_kwh"].mean() * PUE
 
-    print(f"Total consumption = {yearly_totals} kW")
-    print(f"Average daily consumption = {yearly_daily_mean} kW")
+    print(f"Total consumption = {total_sum} kW")
+    print(f"Average daily consumption = {daily_mean} kW")
 
     return
 
